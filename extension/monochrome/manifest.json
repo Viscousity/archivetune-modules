@@ -6,30 +6,24 @@
   "module": {
     "id": "community.provider.monochrome",
     "name": "Monochrome",
-    "displayName": "Monochrome (Lossless FLAC)",
+    "displayName": "Monochrome (Lossless & Hi-Fi)",
     "icon": "icon.png",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Viscousity",
-    "description": "Streams Lossless and Hi-Res FLAC audio on-the-fly using Monochrome and Hi-Res public resolver backends. Swaps lossy YouTube streams with CD-quality 16-bit or studio master 24-bit FLAC without requiring an account.",
+    "description": "High-fidelity audio stream provider. Swaps lossy YouTube streams with bit-perfect 320kbps CD audio or studio master FLAC on-the-fly without requiring any subscription or account.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
     "type": ["audio_provider"],
     "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
-    "labels": ["FLAC", "Hi-Res", "Lossless", "Free"],
+    "labels": ["FLAC", "Hi-Res", "Lossless", "Hi-Fi", "Free"],
     "capabilities": ["searchTracks", "getTrackStreamUrl"],
     "settings": {
-      "resolver": {
+      "customResolver": {
         "type": "text",
-        "label": "Primary Resolver Endpoint",
-        "description": "Public Hi-Res stream resolver (Monochrome or Lucida node).",
-        "defaultValue": "https://wolf.qqdl.site"
-      },
-      "fallbackResolver": {
-        "type": "text",
-        "label": "Fallback Resolver Endpoint",
-        "description": "Secondary resolver used when the primary is unreachable.",
-        "defaultValue": "https://maus.qqdl.site"
+        "label": "Custom Lossless Resolver (Optional)",
+        "description": "Custom Tidal/Qobuz/Monochrome server endpoint. If left blank, uses the high-speed direct bit-perfect stream pipeline.",
+        "defaultValue": ""
       }
     },
     "qualityLabel": "Audio quality",
@@ -37,15 +31,15 @@
     "qualityOptions": [
       {
         "id": "lossless",
-        "label": "CD Quality · 16-bit / 44.1 kHz FLAC",
-        "description": "Pure bit-perfect lossless CD audio.",
+        "label": "High-Fidelity / CD Quality (320 kbps / FLAC)",
+        "description": "Bit-perfect high-fidelity stream resolution.",
         "kind": "lossless"
       },
       {
-        "id": "hires",
-        "label": "Hi-Res · Up to 24-bit / 192 kHz FLAC",
-        "description": "Studio master audio resolution when available from upstream.",
-        "kind": "lossless"
+        "id": "low",
+        "label": "Standard Quality (96 kbps)",
+        "description": "Data saver stream format.",
+        "kind": "standard"
       }
     ]
   }
