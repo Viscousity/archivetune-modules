@@ -6,40 +6,46 @@
   "module": {
     "id": "community.provider.monochrome",
     "name": "Monochrome",
-    "displayName": "Monochrome (Lossless & Hi-Fi)",
+    "displayName": "Monochrome (Hi-Res FLAC & 320k)",
     "icon": "icon.png",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "Viscousity",
-    "description": "High-fidelity audio stream provider. Swaps lossy YouTube streams with bit-perfect 320kbps CD audio or studio master FLAC on-the-fly without requiring any subscription or account.",
+    "description": "High-fidelity lossless stream provider. Supports Hi-Res FLAC (24-bit), CD Lossless FLAC (16-bit), and ultra-fast 320 kbps instant streaming without requiring an account.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
     "type": ["audio_provider"],
     "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
-    "labels": ["FLAC", "Hi-Res", "Lossless", "Hi-Fi", "Free"],
+    "labels": ["FLAC", "Hi-Res", "Lossless", "320kbps", "Free"],
     "capabilities": ["searchTracks", "getTrackStreamUrl"],
     "settings": {
       "customResolver": {
         "type": "text",
         "label": "Custom Lossless Resolver (Optional)",
-        "description": "Custom Tidal/Qobuz/Monochrome server endpoint. If left blank, uses the high-speed direct bit-perfect stream pipeline.",
+        "description": "Custom Tidal/Qobuz/Monochrome server endpoint. If blank, uses the ultra-fast direct bit-perfect stream engine.",
         "defaultValue": ""
       }
     },
     "qualityLabel": "Audio quality",
-    "defaultQuality": "lossless",
+    "defaultQuality": "HI_RES",
     "qualityOptions": [
       {
-        "id": "lossless",
-        "label": "High-Fidelity / CD Quality (320 kbps / FLAC)",
-        "description": "Bit-perfect high-fidelity stream resolution.",
+        "id": "HI_RES",
+        "label": "Hi-Res FLAC · 24-bit / up to 192 kHz",
+        "description": "Studio Master quality 24-bit FLAC audio stream.",
         "kind": "lossless"
       },
       {
-        "id": "low",
-        "label": "Standard Quality (96 kbps)",
-        "description": "Data saver stream format.",
-        "kind": "standard"
+        "id": "LOSSLESS",
+        "label": "Lossless FLAC · 16-bit / 44.1 kHz",
+        "description": "Bit-perfect CD quality 16-bit lossless FLAC audio.",
+        "kind": "lossless"
+      },
+      {
+        "id": "HIGH_320",
+        "label": "320 kbps · High Speed Instant Stream",
+        "description": "Ultra fast loading, crystal clear 320 kbps audio.",
+        "kind": "lossy"
       }
     ]
   }
