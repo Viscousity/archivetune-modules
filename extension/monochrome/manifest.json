@@ -1,0 +1,52 @@
+{
+  "format": "archivetune.module",
+  "formatVersion": 1,
+  "apiVersion": 1,
+  "entry": "provider.js",
+  "module": {
+    "id": "community.provider.monochrome",
+    "name": "Monochrome",
+    "displayName": "Monochrome (Lossless FLAC)",
+    "icon": "icon.png",
+    "version": "1.0.0",
+    "author": "Viscousity",
+    "description": "Streams Lossless and Hi-Res FLAC audio on-the-fly using Monochrome and Hi-Res public resolver backends. Swaps lossy YouTube streams with CD-quality 16-bit or studio master 24-bit FLAC without requiring an account.",
+    "homepage": "https://github.com/Viscousity/archivetune-modules",
+    "repository": "https://github.com/Viscousity/archivetune-modules",
+    "license": "GPL-3.0",
+    "type": ["audio_provider"],
+    "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
+    "labels": ["FLAC", "Hi-Res", "Lossless", "Free"],
+    "capabilities": ["searchTracks", "getTrackStreamUrl"],
+    "settings": {
+      "resolver": {
+        "type": "text",
+        "label": "Primary Resolver Endpoint",
+        "description": "Public Hi-Res stream resolver (Monochrome or Lucida node).",
+        "defaultValue": "https://wolf.qqdl.site"
+      },
+      "fallbackResolver": {
+        "type": "text",
+        "label": "Fallback Resolver Endpoint",
+        "description": "Secondary resolver used when the primary is unreachable.",
+        "defaultValue": "https://maus.qqdl.site"
+      }
+    },
+    "qualityLabel": "Audio quality",
+    "defaultQuality": "lossless",
+    "qualityOptions": [
+      {
+        "id": "lossless",
+        "label": "CD Quality · 16-bit / 44.1 kHz FLAC",
+        "description": "Pure bit-perfect lossless CD audio.",
+        "kind": "lossless"
+      },
+      {
+        "id": "hires",
+        "label": "Hi-Res · Up to 24-bit / 192 kHz FLAC",
+        "description": "Studio master audio resolution when available from upstream.",
+        "kind": "lossless"
+      }
+    ]
+  }
+}
