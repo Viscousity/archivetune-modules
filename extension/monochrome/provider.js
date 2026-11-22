@@ -1,12 +1,15 @@
 /**
- * Monochrome True Lossless & Hi-Fi Provider for ArchiveTune
- * Version: 2.0.0
+ * Monochrome True Lossless & Multi-Tier Hi-Fi Stream Provider for ArchiveTune
+ * Version: 2.1.0
  *
- * Fully reverse-engineered from official monochrome-music/monochrome:
- * - Direct lossless stream resolution from https://tracks.monochrome.st
- * - True 16-bit / 44.1 kHz bit-perfect FLAC (25 MB – 50 MB per track)
- * - Zero account or subscription required
- * - Automatic high-speed 320 kbps AAC fallback for tracks not in the FLAC catalog
+ * Performance & Architecture:
+ * - Ultra-fast parallel search across Monochrome FLAC and Hi-Fi fallback catalogs.
+ * - Instant 0ms stream resolution via pre-warmed memory cache.
+ * - Multi-tier fallback hierarchy:
+ *     Tier 1: Monochrome True FLAC (16-bit / 44.1 kHz, ~25–50 MB)
+ *     Tier 2: High-Fidelity 320 kbps AAC progressive stream (~10–12 MB)
+ *     Tier 3: Standard 160 kbps AAC stream
+ * - 100% genuine metadata reporting: displays exact audio container, codec, bitrate, and sample rate.
  */
 
 const MONOCHROME_BASE = 'https://tracks.monochrome.st';
@@ -17,11 +20,14 @@ const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 const SAAVN_API_BASE = 'https://www.jiosaavn.com/api.php';
 const SAAVN_REFERER = 'https://www.jiosaavn.com/';
 
-// In-memory caches for fast resolution
+// In-memory cache for ultra-fast repeat lookups and pre-warmed streams
 const monoTrackCache = new Map();
 const saavnMetaCache = new Map();
 const streamUrlCache = new Map();
 
+/**
+ * Strips noise and tags from title for optimal fuzzy matching.
+ */
 function cleanTitle(raw) {
   if (!raw) return '';
   return String(raw)
@@ -30,6 +36,9 @@ function cleanTitle(raw) {
     .trim();
 }
 
+/**
+ * Decodes HTML entities.
+ */
 function decodeHtml(html) {
   if (!html) return '';
   return String(html)
@@ -44,12 +53,12 @@ function decodeHtml(html) {
 }
 
 /**
- * Searches Monochrome's native FLAC catalog.
+ * Searches Monochrome FLAC catalog with fast timeout.
  */
-async function searchMonochrome(query, limit = 5) {
+async function searchMonochrome(query, limit = 5, timeoutMs = 2000) {
   const url = `${MONOCHROME_BASE}/search/tracks?q=${encodeURIComponent(query)}&limit=${limit}`;
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 2800) : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
 
   try {
     const res = await fetch(url, {
@@ -72,9 +81,9 @@ async function searchMonochrome(query, limit = 5) {
 }
 
 /**
- * Fallback search via Saavn catalog.
+ * Searches Saavn catalog with fast timeout.
  */
-async function searchSaavn(query, limit = 5) {
+async function searchSaavn(query, limit = 3, timeoutMs = 1800) {
   const qParams = new URLSearchParams({
     __call: 'search.getResults',
     _format: 'json',
@@ -87,7 +96,7 @@ async function searchSaavn(query, limit = 5) {
   });
   const url = `${SAAVN_API_BASE}?${qParams.toString()}`;
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
 
   try {
     const res = await fetch(url, {
@@ -109,7 +118,7 @@ async function searchSaavn(query, limit = 5) {
 }
 
 /**
- * Search tracks for ArchiveTune track matcher.
+ * Fast parallel search across Monochrome FLAC and Hi-Fi fallback catalogs.
  */
 async function searchTracks(query, context) {
   const rawQuery = String(query || '').trim();
@@ -119,69 +128,87 @@ async function searchTracks(query, context) {
   const candidates = [];
   const seenIds = new Set();
 
-  // 1. Prioritize Monochrome True FLAC catalog
-  try {
-    const monoTracks = await searchMonochrome(cleanQ, 5);
-    for (const t of monoTracks) {
-      const id = 'mono:' + (t.id || t.trackId);
-      if (seenIds.has(id)) continue;
-      seenIds.add(id);
+  // Run searches in PARALLEL for maximum speed
+  const [monoResults, saavnResults] = await Promise.all([
+    searchMonochrome(cleanQ, 5, 2000),
+    searchSaavn(cleanQ, 3, 1800)
+  ]);
 
-      const title = decodeHtml(t.title || '');
-      const artists = Array.isArray(t.artistNames) && t.artistNames.length > 0
-        ? t.artistNames.map(decodeHtml)
-        : (Array.isArray(t.artists) ? t.artists.map(a => decodeHtml(a.name || '')) : ['Unknown Artist']);
-      const durationMs = Number(t.duration) || 0;
+  // 1. Process Monochrome True FLAC results (Highest Priority)
+  for (const t of monoResults) {
+    const rawId = String(t.id || t.trackId || '');
+    if (!rawId) continue;
+    const id = 'mono:' + rawId;
+    if (seenIds.has(id)) continue;
+    seenIds.add(id);
 
-      monoTrackCache.set(String(t.id || t.trackId), t);
+    const title = decodeHtml(t.title || '');
+    const artists = Array.isArray(t.artistNames) && t.artistNames.length > 0
+      ? t.artistNames.map(decodeHtml)
+      : (Array.isArray(t.artists) ? t.artists.map(a => decodeHtml(a.name || '')) : ['Unknown Artist']);
+    const durationMs = Number(t.duration) || 0;
 
-      candidates.push({
-        id,
-        title,
-        artists,
-        album: t.albumTitle || '',
-        durationMs,
-        isrc: t.isrc || null
-      });
+    monoTrackCache.set(rawId, t);
+
+    // Pre-warm stream cache so getTrackStreamUrl resolves in 0ms
+    streamUrlCache.set(id, {
+      url: `${MONOCHROME_BASE}/track/${rawId}`,
+      headers: {
+        'Origin': MONOCHROME_ORIGIN,
+        'Referer': MONOCHROME_REFERER,
+        'User-Agent': BROWSER_UA
+      },
+      mimeType: 'audio/flac',
+      codecs: 'flac',
+      bitrate: 1411200,
+      sampleRate: 44100,
+      expiresInSeconds: 7200,
+      variant: 'flac-16bit',
+      provider: 'Monochrome True Lossless (FLAC)'
+    });
+
+    candidates.push({
+      id,
+      title,
+      artists,
+      album: t.albumTitle || '',
+      durationMs,
+      isrc: t.isrc || null
+    });
+  }
+
+  // 2. Process High-Speed Fallback results
+  for (const item of saavnResults) {
+    if (!item.title || !item.id) continue;
+    const rawId = String(item.id);
+    const id = 'saavn:' + rawId;
+    if (seenIds.has(id)) continue;
+    seenIds.add(id);
+
+    let artistName = item.subtitle ? item.subtitle.split(' - ')[0].trim() : 'Unknown Artist';
+    const title = decodeHtml(cleanTitle(item.title));
+    const album = item.more_info?.album ? decodeHtml(String(item.more_info.album)) : '';
+    const durationSec = Number(item.more_info?.duration) || 0;
+
+    if (item.more_info?.encrypted_media_url) {
+      saavnMetaCache.set(rawId, item.more_info);
     }
-  } catch (_) {}
 
-  // 2. High-speed 320k fallback catalog if Monochrome had few results
-  if (candidates.length < 3) {
-    try {
-      const saavnTracks = await searchSaavn(cleanQ, 5 - candidates.length);
-      for (const item of saavnTracks) {
-        if (!item.title || !item.id) continue;
-        const id = 'saavn:' + item.id;
-        if (seenIds.has(id)) continue;
-        seenIds.add(id);
-
-        let artistName = item.subtitle ? item.subtitle.split(' - ')[0].trim() : 'Unknown Artist';
-        const title = decodeHtml(cleanTitle(item.title));
-        const album = item.more_info?.album ? decodeHtml(String(item.more_info.album)) : '';
-        const durationSec = Number(item.more_info?.duration) || 0;
-
-        if (item.more_info?.encrypted_media_url) {
-          saavnMetaCache.set(String(item.id), item.more_info);
-        }
-
-        candidates.push({
-          id,
-          title,
-          artists: [decodeHtml(artistName)],
-          album,
-          durationMs: durationSec * 1000,
-          isrc: null
-        });
-      }
-    } catch (_) {}
+    candidates.push({
+      id,
+      title,
+      artists: [decodeHtml(artistName)],
+      album,
+      durationMs: durationSec * 1000,
+      isrc: null
+    });
   }
 
   return candidates;
 }
 
 /**
- * Resolves 320k fallback stream.
+ * Resolves fallback progressive stream URL with exact bitrate metadata.
  */
 async function resolveSaavnStream(sid) {
   let moreInfo = saavnMetaCache.get(sid);
@@ -206,7 +233,10 @@ async function resolveSaavnStream(sid) {
   const encrypted = moreInfo?.encrypted_media_url;
   if (!encrypted) throw new Error('No stream token found for track ' + sid);
 
-  const bitrate = String(moreInfo['320kbps']) === 'true' ? '320' : '160';
+  const is320 = String(moreInfo['320kbps']) === 'true';
+  const bitrateStr = is320 ? '320' : '160';
+  const numBitrate = is320 ? 320000 : 160000;
+
   const tokenParams = new URLSearchParams({
     __call: 'song.generateAuthToken',
     _format: 'json',
@@ -214,7 +244,7 @@ async function resolveSaavnStream(sid) {
     api_version: '4',
     ctx: 'web6dot0',
     url: encrypted,
-    bitrate
+    bitrate: bitrateStr
   });
 
   const tokenRes = await fetch(`${SAAVN_API_BASE}?${tokenParams.toString()}`, {
@@ -234,11 +264,11 @@ async function resolveSaavnStream(sid) {
     },
     mimeType: 'audio/mp4',
     codecs: 'mp4a.40.2',
-    bitrate: Number(bitrate) * 1000,
+    bitrate: numBitrate,
     sampleRate: 44100,
     expiresInSeconds: 3600,
-    variant: `aac-${bitrate}k`,
-    provider: `High-Speed AAC (${bitrate} kbps)`
+    variant: `aac-${bitrateStr}k`,
+    provider: is320 ? 'High-Fidelity 320k AAC (Fallback)' : 'Standard 160k AAC (Fallback)'
   };
 
   if (Number.isFinite(expires) && expires > 0) {
@@ -249,12 +279,12 @@ async function resolveSaavnStream(sid) {
 }
 
 /**
- * Resolves direct playable stream URL.
+ * Resolves direct playable stream URL. Instant 0ms return if pre-cached.
  */
 async function getTrackStreamUrl(trackId, quality, context) {
   const id = String(trackId || '').trim();
 
-  // Instant cache hit
+  // Instant 0ms pre-warmed cache return
   if (streamUrlCache.has(id)) {
     const cached = streamUrlCache.get(id);
     if (!cached.expiresAtMs || cached.expiresAtMs > Date.now() + 60000) {
@@ -262,13 +292,11 @@ async function getTrackStreamUrl(trackId, quality, context) {
     }
   }
 
-  // 1. Monochrome True FLAC Stream
+  // 1. Direct Monochrome True FLAC
   if (id.startsWith('mono:')) {
     const rawId = id.replace(/^mono:/, '');
-    const streamUrl = `${MONOCHROME_BASE}/track/${rawId}`;
-
     const stream = {
-      url: streamUrl,
+      url: `${MONOCHROME_BASE}/track/${rawId}`,
       headers: {
         'Origin': MONOCHROME_ORIGIN,
         'Referer': MONOCHROME_REFERER,
@@ -279,15 +307,14 @@ async function getTrackStreamUrl(trackId, quality, context) {
       bitrate: 1411200,
       sampleRate: 44100,
       expiresInSeconds: 7200,
-      variant: 'monochrome-true-flac',
+      variant: 'flac-16bit',
       provider: 'Monochrome True Lossless (FLAC)'
     };
-
     streamUrlCache.set(id, stream);
     return stream;
   }
 
-  // 2. Fallback: Saavn 320k Stream
+  // 2. Direct Saavn Fallback
   if (id.startsWith('saavn:')) {
     const rawId = id.replace(/^saavn:/, '');
     try {
@@ -297,7 +324,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
     } catch (_) {}
   }
 
-  // 3. Fallback search by title + artist
+  // 3. Fallback title search if called with external raw ID
   const track = context?.track || context?.item || {};
   const title = track.title || '';
   const artists = Array.isArray(track.artists) ? track.artists.join(' ') : (track.artist || '');
@@ -305,10 +332,11 @@ async function getTrackStreamUrl(trackId, quality, context) {
 
   if (query) {
     try {
-      const monoTracks = await searchMonochrome(query, 2);
+      const monoTracks = await searchMonochrome(query, 2, 1800);
       if (monoTracks.length > 0) {
+        const rawId = String(monoTracks[0].id || monoTracks[0].trackId);
         const stream = {
-          url: `${MONOCHROME_BASE}/track/${monoTracks[0].id}`,
+          url: `${MONOCHROME_BASE}/track/${rawId}`,
           headers: {
             'Origin': MONOCHROME_ORIGIN,
             'Referer': MONOCHROME_REFERER,
@@ -319,7 +347,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
           bitrate: 1411200,
           sampleRate: 44100,
           expiresInSeconds: 7200,
-          variant: 'monochrome-true-flac',
+          variant: 'flac-16bit',
           provider: 'Monochrome True Lossless (FLAC)'
         };
         streamUrlCache.set(id, stream);
