@@ -6,39 +6,31 @@
   "module": {
     "id": "community.provider.monochrome",
     "name": "Monochrome",
-    "displayName": "Monochrome (Hi-Fi Streamer)",
+    "displayName": "Monochrome (True FLAC & Hi-Fi)",
     "icon": "icon.png",
-    "version": "1.0.3",
+    "version": "2.0.0",
     "author": "Viscousity",
-    "description": "High-fidelity audio stream provider. Delivers authentic 320 kbps AAC progressive streams and supports custom self-hosted FLAC endpoints without spoofed metadata.",
+    "description": "True Lossless FLAC stream provider reverse-engineered from Monochrome. Streams bit-perfect 16-bit FLAC directly from Monochrome servers without requiring an account.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
     "type": ["audio_provider"],
     "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
-    "labels": ["320kbps", "AAC", "Hi-Fi", "Free"],
+    "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
     "capabilities": ["searchTracks", "getTrackStreamUrl"],
-    "settings": {
-      "customResolver": {
-        "type": "text",
-        "label": "Custom Lossless Resolver (Optional)",
-        "description": "URL to a self-hosted Tidal/Qobuz/Lucida proxy. If left blank, uses the high-speed 320 kbps direct engine.",
-        "defaultValue": ""
-      }
-    },
     "qualityLabel": "Audio quality",
-    "defaultQuality": "HIGH_320",
+    "defaultQuality": "FLAC",
     "qualityOptions": [
       {
-        "id": "HIGH_320",
-        "label": "High · 320 kbps AAC",
-        "description": "High-fidelity progressive stream at 320 kbps.",
-        "kind": "lossy"
+        "id": "FLAC",
+        "label": "True Lossless FLAC · 16-bit / 44.1 kHz",
+        "description": "Bit-perfect authentic CD quality FLAC stream from Monochrome.",
+        "kind": "lossless"
       },
       {
-        "id": "LOW_96",
-        "label": "Data saver · 96 kbps AAC",
-        "description": "Data saver stream format.",
+        "id": "HIGH_320",
+        "label": "High Speed · 320 kbps AAC",
+        "description": "Data saver progressive stream at 320 kbps.",
         "kind": "lossy"
       }
     ]

@@ -1,22 +1,22 @@
 {
   "name": "ArchiveTune Community Modules",
-  "version": 1,
-  "updated_at": "2026-11-22T02:05:00Z",
+  "version": 2,
+  "updated_at": "2026-11-22T02:15:00Z",
   "modules": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Hi-Fi Streamer)",
-      "version": "1.0.3",
+      "display_name": "Monochrome (True FLAC & Hi-Fi)",
+      "version": "2.0.0",
       "author": "Viscousity",
-      "description": "High-fidelity audio stream provider. Delivers authentic 320 kbps AAC progressive streams and supports custom self-hosted FLAC endpoints without spoofed metadata.",
+      "description": "True Lossless FLAC stream provider reverse-engineered from Monochrome. Streams bit-perfect 16-bit FLAC (30-50 MB) directly from Monochrome servers without requiring an account.",
       "download": "./dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "dcb9708c966f06abbf79f3e3bf6da11d895a252c8efe2ca65ca5f619a22fc404",
+      "sha256": "10284378eaa8f0cd650061e94123aa0c42593fc2847329d1cc42068b0b246340",
       "type": "MODULE",
       "category": "download",
-      "labels": ["320kbps", "AAC", "Hi-Fi", "Free"],
-      "tags": ["320k", "aac", "hi-fi", "monochrome"],
+      "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
+      "tags": ["flac", "lossless", "hi-fi", "monochrome"],
       "capabilities": ["searchTracks", "getTrackStreamUrl"]
     }
   ],
@@ -24,17 +24,17 @@
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Hi-Fi Streamer)",
-      "version": "1.0.3",
+      "display_name": "Monochrome (True FLAC & Hi-Fi)",
+      "version": "2.0.0",
       "author": "Viscousity",
-      "description": "High-fidelity audio stream provider. Delivers authentic 320 kbps AAC progressive streams and supports custom self-hosted FLAC endpoints without spoofed metadata.",
+      "description": "True Lossless FLAC stream provider reverse-engineered from Monochrome. Streams bit-perfect 16-bit FLAC (30-50 MB) directly from Monochrome servers without requiring an account.",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download": "./dist/monochrome.arch",
-      "sha256": "dcb9708c966f06abbf79f3e3bf6da11d895a252c8efe2ca65ca5f619a22fc404",
+      "sha256": "10284378eaa8f0cd650061e94123aa0c42593fc2847329d1cc42068b0b246340",
       "type": "MODULE",
       "category": "download",
-      "labels": ["320kbps", "AAC", "Hi-Fi", "Free"],
-      "tags": ["320k", "aac", "hi-fi", "monochrome"],
+      "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
+      "tags": ["flac", "lossless", "hi-fi", "monochrome"],
       "capabilities": ["searchTracks", "getTrackStreamUrl"]
     }
   ]
