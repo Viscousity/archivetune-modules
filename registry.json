@@ -1,25 +1,7 @@
 {
   "name": "ArchiveTune Community Modules",
-  "version": 2,
-  "updated_at": "2026-11-22T02:35:00Z",
-  "modules": [
-    {
-      "id": "community.provider.monochrome",
-      "name": "monochrome",
-      "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.2.0",
-      "author": "Viscousity",
-      "description": "True Lossless FLAC stream provider with precision studio duration matching, universal fallback (True FLAC -> 320k AAC -> 160k AAC), 0ms instant playback pre-warming, and high-res artwork enrichment. Honest, bit-accurate metadata on every stream.",
-      "download": "./dist/monochrome.arch",
-      "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "3b8335c28a111966d5080759b9603de1503ac5ed4e5a3cb7280e06e2e92d1bf9",
-      "type": "MODULE",
-      "category": "download",
-      "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
-      "tags": ["flac", "lossless", "hi-fi", "monochrome"],
-      "capabilities": ["searchTracks", "getTrackStreamUrl"]
-    }
-  ],
+  "version": 1,
+  "updated_at": "2026-11-22T03:50:00Z",
   "extensions": [
     {
       "id": "community.provider.monochrome",
@@ -29,13 +11,28 @@
       "author": "Viscousity",
       "description": "True Lossless FLAC stream provider with precision studio duration matching, universal fallback (True FLAC -> 320k AAC -> 160k AAC), 0ms instant playback pre-warming, and high-res artwork enrichment. Honest, bit-accurate metadata on every stream.",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "download": "./dist/monochrome.arch",
-      "sha256": "3b8335c28a111966d5080759b9603de1503ac5ed4e5a3cb7280e06e2e92d1bf9",
-      "type": "MODULE",
+      "sha256": "fb7b1ba5387728e792323ab321872ffa12c716e8ad216fb211d312283c5027d5",
+      "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
-      "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
-      "tags": ["flac", "lossless", "hi-fi", "monochrome"],
-      "capabilities": ["searchTracks", "getTrackStreamUrl"]
+      "tags": [
+        "monochrome",
+        "lossless",
+        "hi-fi",
+        "flac",
+        "free"
+      ],
+      "labels": [
+        "FLAC",
+        "Lossless",
+        "Hi-Fi",
+        "Free"
+      ],
+      "capabilities": [
+        "searchTracks",
+        "getTrackStreamUrl"
+      ],
+      "downloads": 0,
+      "updated_at": "2026-11-22T03:50:00Z"
     }
   ]
 }
