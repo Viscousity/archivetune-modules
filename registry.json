@@ -1,22 +1,22 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-21T18:30:00Z",
+  "updated_at": "2026-11-22T02:05:00Z",
   "modules": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Hi-Res FLAC & 320k)",
-      "version": "1.0.2",
+      "display_name": "Monochrome (Hi-Fi Streamer)",
+      "version": "1.0.3",
       "author": "Viscousity",
-      "description": "High-fidelity lossless stream provider. Supports 3 switchable modes: Hi-Res FLAC (24-bit), CD Lossless FLAC (16-bit), and ultra-fast 320 kbps instant streaming.",
+      "description": "High-fidelity audio stream provider. Delivers authentic 320 kbps AAC progressive streams and supports custom self-hosted FLAC endpoints without spoofed metadata.",
       "download": "./dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "12c6a529698e12bfbefaef888867db8f1e069253550df7b5664e03edc4af7c32",
+      "sha256": "dcb9708c966f06abbf79f3e3bf6da11d895a252c8efe2ca65ca5f619a22fc404",
       "type": "MODULE",
       "category": "download",
-      "labels": ["FLAC", "Hi-Res", "Lossless", "320kbps", "Free"],
-      "tags": ["flac", "lossless", "hi-res", "320k", "monochrome"],
+      "labels": ["320kbps", "AAC", "Hi-Fi", "Free"],
+      "tags": ["320k", "aac", "hi-fi", "monochrome"],
       "capabilities": ["searchTracks", "getTrackStreamUrl"]
     }
   ],
@@ -24,17 +24,17 @@
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Hi-Res FLAC & 320k)",
-      "version": "1.0.2",
+      "display_name": "Monochrome (Hi-Fi Streamer)",
+      "version": "1.0.3",
       "author": "Viscousity",
-      "description": "High-fidelity lossless stream provider. Supports 3 switchable modes: Hi-Res FLAC (24-bit), CD Lossless FLAC (16-bit), and ultra-fast 320 kbps instant streaming.",
+      "description": "High-fidelity audio stream provider. Delivers authentic 320 kbps AAC progressive streams and supports custom self-hosted FLAC endpoints without spoofed metadata.",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download": "./dist/monochrome.arch",
-      "sha256": "12c6a529698e12bfbefaef888867db8f1e069253550df7b5664e03edc4af7c32",
+      "sha256": "dcb9708c966f06abbf79f3e3bf6da11d895a252c8efe2ca65ca5f619a22fc404",
       "type": "MODULE",
       "category": "download",
-      "labels": ["FLAC", "Hi-Res", "Lossless", "320kbps", "Free"],
-      "tags": ["flac", "lossless", "hi-res", "320k", "monochrome"],
+      "labels": ["320kbps", "AAC", "Hi-Fi", "Free"],
+      "tags": ["320k", "aac", "hi-fi", "monochrome"],
       "capabilities": ["searchTracks", "getTrackStreamUrl"]
     }
   ]

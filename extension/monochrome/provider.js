@@ -1,23 +1,19 @@
 /**
- * Monochrome Lossless & Hi-Fi Stream Provider for ArchiveTune
- * Version: 1.0.2
+ * Monochrome Audio Provider for ArchiveTune
+ * Version: 1.0.3
  *
- * Supported Quality Modes:
- *  - HI_RES: Hi-Res FLAC (24-bit / 96-192 kHz)
- *  - LOSSLESS: CD Quality FLAC (16-bit / 44.1 kHz)
- *  - HIGH_320: 320 kbps Ultra Fast Instant Stream
+ * Provides accurate, honest metadata reporting:
+ * - 320 kbps AAC progressive streams report audio/mp4, mp4a.40.2, 320 kbps, 44.1 kHz.
+ * - Custom resolver FLAC streams report audio/flac, flac, true sample rate.
  */
 
 const SAAVN_API_BASE = 'https://www.jiosaavn.com/api.php';
 const SAAVN_REFERER = 'https://www.jiosaavn.com/';
 
-// In-memory high-speed cache for zero-latency repeats and pre-cached search metadata
+// In-memory cache for low-latency repeats
 const metadataCache = new Map();
 const streamCache = new Map();
 
-/**
- * Clean track title for optimal catalog matching.
- */
 function cleanTitle(raw) {
   if (!raw) return '';
   return String(raw)
@@ -26,9 +22,6 @@ function cleanTitle(raw) {
     .trim();
 }
 
-/**
- * Decode HTML entities in strings.
- */
 function decodeHtml(html) {
   if (!html) return '';
   return String(html)
@@ -42,9 +35,6 @@ function decodeHtml(html) {
     .trim();
 }
 
-/**
- * Read module setting safely.
- */
 function setting(context, key, defaultValue) {
   try {
     const s = context?.settings || context?.module?.settings;
@@ -55,9 +45,6 @@ function setting(context, key, defaultValue) {
   return defaultValue;
 }
 
-/**
- * Call Saavn public endpoint with timeout protection.
- */
 async function callSaavn(action, params = {}, timeoutMs = 2500) {
   const query = new URLSearchParams({
     __call: action,
@@ -90,9 +77,6 @@ async function callSaavn(action, params = {}, timeoutMs = 2500) {
   }
 }
 
-/**
- * Search tracks with low latency and pre-cache metadata.
- */
 async function searchTracks(query, context) {
   const rawQuery = String(query || '').trim();
   if (!rawQuery) return [];
@@ -102,7 +86,6 @@ async function searchTracks(query, context) {
   const seen = new Set();
   const searchLimit = 5;
 
-  // Query high-fidelity catalog
   try {
     const data = await callSaavn('search.getResults', { q: cleanQuery, n: String(searchLimit), p: '1' }, 2000);
     if (data && Array.isArray(data.results)) {
@@ -117,7 +100,6 @@ async function searchTracks(query, context) {
         const album = item.more_info?.album ? decodeHtml(String(item.more_info.album)) : '';
         const durationSec = Number(item.more_info?.duration) || 0;
 
-        // Pre-cache item metadata for instant stream generation
         if (item.more_info?.encrypted_media_url) {
           metadataCache.set(String(item.id), item.more_info);
         }
@@ -137,13 +119,9 @@ async function searchTracks(query, context) {
   return candidates.slice(0, searchLimit);
 }
 
-/**
- * Resolve direct high-speed progressive stream URL.
- */
 async function getStreamFromSaavnId(sid, quality) {
   let moreInfo = metadataCache.get(sid);
 
-  // If not in pre-cache, fetch track details
   if (!moreInfo || !moreInfo.encrypted_media_url) {
     const details = await callSaavn('song.getDetails', { pids: sid }, 2000);
     const song = (details?.songs && details.songs[0]) || details?.[sid];
@@ -156,8 +134,8 @@ async function getStreamFromSaavnId(sid, quality) {
   const encrypted = moreInfo?.encrypted_media_url;
   if (!encrypted) throw new Error('No stream token found for track ' + sid);
 
-  const q = String(quality || 'HI_RES').toUpperCase();
-  const targetBitrate = (q === '320' || q === 'HIGH_320') ? '320' : (q === 'LOW' || q === '96') ? '96' : '320';
+  const q = String(quality || 'HIGH_320').toUpperCase();
+  const targetBitrate = (q === 'LOW' || q === '96') ? '96' : '320';
   const bitrate = (targetBitrate === '320' && String(moreInfo['320kbps']) !== 'true') ? '96' : targetBitrate;
 
   const tokenData = await callSaavn('song.generateAuthToken', { url: encrypted, bitrate }, 2000);
@@ -167,41 +145,19 @@ async function getStreamFromSaavnId(sid, quality) {
   }
 
   const expires = Number(streamUrl.match(/[?&]Expires=(\d+)/)?.[1]);
+  const numBitrate = Number(bitrate) * 1000;
 
-  // Configure response based on the selected quality mode
-  let mimeType = 'audio/mp4';
-  let codecs = 'mp4a.40.2';
-  let streamBitrate = 320000;
-  let sampleRate = 44100;
-  let variant = 'monochrome-320k';
-  let provider = 'Monochrome (320 kbps)';
-
-  if (q === 'HI_RES') {
-    mimeType = 'audio/flac';
-    codecs = 'flac';
-    streamBitrate = 4608000;
-    sampleRate = 96000;
-    variant = 'monochrome-hires-24bit';
-    provider = 'Monochrome (Hi-Res FLAC)';
-  } else if (q === 'LOSSLESS' || q === 'FLAC') {
-    mimeType = 'audio/flac';
-    codecs = 'flac';
-    streamBitrate = 1411200;
-    sampleRate = 44100;
-    variant = 'monochrome-lossless-flac';
-    provider = 'Monochrome (Lossless FLAC)';
-  }
-
+  // Accurate metadata: this stream is 320 kbps AAC in an MP4 container
   const stream = {
     url: streamUrl,
     headers: { 'Referer': SAAVN_REFERER },
-    mimeType,
-    codecs,
-    bitrate: streamBitrate,
-    sampleRate,
+    mimeType: 'audio/mp4',
+    codecs: 'mp4a.40.2',
+    bitrate: numBitrate,
+    sampleRate: 44100,
     expiresInSeconds: 3600,
-    variant,
-    provider
+    variant: `aac-${bitrate}k`,
+    provider: `Monochrome CDN (${bitrate} kbps AAC)`
   };
 
   if (Number.isFinite(expires) && expires > 0) {
@@ -211,15 +167,11 @@ async function getStreamFromSaavnId(sid, quality) {
   return stream;
 }
 
-/**
- * Resolves the direct playable stream URL for the matched track.
- */
 async function getTrackStreamUrl(trackId, quality, context) {
-  const q = String(quality || 'HI_RES').toUpperCase();
+  const q = String(quality || 'HIGH_320').toUpperCase();
   const id = String(trackId || '').trim();
   const cacheKey = `${id}:${q}`;
 
-  // Check cache for instant (0ms) resolution
   if (streamCache.has(cacheKey)) {
     const cached = streamCache.get(cacheKey);
     if (!cached.expiresAtMs || cached.expiresAtMs > Date.now() + 60000) {
@@ -231,7 +183,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
   const title = track.title || '';
   const artists = Array.isArray(track.artists) ? track.artists.join(' ') : (track.artist || '');
 
-  // 1. Custom Resolver Endpoint (if configured by the user)
+  // 1. Custom Resolver Endpoint (e.g. user self-hosted FLAC proxy)
   const customResolver = setting(context, 'customResolver', '');
   if (customResolver && /^https?:\/\//i.test(customResolver)) {
     try {
@@ -248,15 +200,16 @@ async function getTrackStreamUrl(trackId, quality, context) {
         if (ct.includes('json')) {
           const data = await res.json();
           if (data && data.url) {
+            const isFlac = (data.mimeType || '').includes('flac') || (data.codecs || '').includes('flac');
             const stream = {
               url: data.url,
-              mimeType: data.mimeType || (q === 'HIGH_320' ? 'audio/mp4' : 'audio/flac'),
-              codecs: data.codecs || (q === 'HIGH_320' ? 'mp4a.40.2' : 'flac'),
-              bitrate: data.bitrate || (q === 'HI_RES' ? 4608000 : q === 'LOSSLESS' ? 1411200 : 320000),
-              sampleRate: data.sampleRate || (q === 'HI_RES' ? 96000 : 44100),
+              mimeType: data.mimeType || (isFlac ? 'audio/flac' : 'audio/mp4'),
+              codecs: data.codecs || (isFlac ? 'flac' : 'mp4a.40.2'),
+              bitrate: data.bitrate || (isFlac ? 1411200 : 320000),
+              sampleRate: data.sampleRate || 44100,
               expiresInSeconds: data.expiresInSeconds || 3600,
-              variant: data.variant || `monochrome-${q.toLowerCase()}`,
-              provider: data.provider || 'Monochrome FLAC'
+              variant: data.variant || (isFlac ? 'custom-flac' : 'custom-stream'),
+              provider: data.provider || 'Custom Lossless Resolver'
             };
             streamCache.set(cacheKey, stream);
             return stream;
@@ -276,7 +229,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
     } catch (_) {}
   }
 
-  // 3. High-Fidelity resolution by title & artist
+  // 3. Search resolution by title & artist
   const query = `${title} ${artists}`.trim();
   if (query) {
     try {
@@ -290,7 +243,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
     } catch (_) {}
   }
 
-  // Fallback: search by title only
+  // Fallback: title only
   if (title) {
     try {
       const searchData = await callSaavn('search.getResults', { q: title, n: '3', p: '1' }, 1800);
@@ -303,7 +256,7 @@ async function getTrackStreamUrl(trackId, quality, context) {
     } catch (_) {}
   }
 
-  throw new Error('Monochrome stream could not be resolved for this track.');
+  throw new Error('Audio stream could not be resolved for this track.');
 }
 
 module.exports = { searchTracks, getTrackStreamUrl };
