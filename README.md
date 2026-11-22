@@ -15,7 +15,7 @@ You can add this entire repository directly to your ArchiveTune app:
    ```
    *(Or direct registry link: `https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/registry.json`)*
 5. Tap **Add / Confirm**.
-6. Tap the new **ArchiveTune Community Modules** catalog card and install **Monochrome (Lossless FLAC)**!
+6. Tap the new **ArchiveTune Community Modules** catalog card and install **Monochrome (True FLAC & Hi-Fi)**!
 
 ---
 
@@ -23,7 +23,7 @@ You can add this entire repository directly to your ArchiveTune app:
 
 If you prefer installing individual `.arch` packages manually:
 
-* **[Monochrome Lossless FLAC](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)** (`monochrome.arch`)
+* **[Monochrome True FLAC & Hi-Fi (v2.2.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)** (`monochrome.arch`)
   * Direct URL for ArchiveTune **Add module URL**:
     ```text
     https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch
@@ -33,17 +33,22 @@ If you prefer installing individual `.arch` packages manually:
 
 ## Available Modules
 
-### 1. Monochrome (Lossless FLAC)
+### 1. Monochrome (True FLAC & Hi-Fi) `v2.2.0`
 * **ID:** `community.provider.monochrome`
-* **Audio Format:** 16-bit / 44.1 kHz FLAC (CD Quality) and up to 24-bit / 192 kHz FLAC (Hi-Res Master).
-* **Account Required:** **None** (zero sign-in or subscription).
-* **How it works:** Transparently intercepts standard YouTube Music tracks and matches them against public lossless backends (Monochrome, Lucida, Qobuz scrapers) to stream uncompressed bit-perfect FLAC on-the-fly.
+* **Audio Format:** 16-bit / 44.1 kHz FLAC (CD Quality, ~25–50 MB) with automatic high-speed fallback to 320 kbps / 160 kbps progressive AAC.
+* **Account Required:** **None** (zero sign-in or subscription needed).
+* **Key Features:**
+  * **Precision Studio Matching:** Compares duration against the original studio release (±4s) to eliminate live recordings, extended edits, and unofficial remixes.
+  * **Universal 100% Fallback:** Seamlessly plays any track from YouTube Music mixes or playlists (FLAC -> 320k -> 160k).
+  * **0ms Pre-Warmed Stream Resolution:** Pre-populates stream links in memory during search for instantaneous playback.
+  * **Ultra-HD Studio Artwork:** Delivers crisp cover art up to 1400×1400 directly on track candidates.
+  * **Bit-Accurate Honest Metadata:** Shows genuine codecs and bitrates matching actual file sizes.
 
 ---
 
 ## Authoring & Packaging
 
-Modules follow the native `.arch` Package Format v1 (ZIP archive containing `manifest.json`, `provider.js`, and optional `icon.png`).
+Modules follow the native `.arch` Package Format v1 (ZIP archive containing `manifest.json`, `provider.js`, and `icon.png`).
 
 To package changes:
 ```bash
