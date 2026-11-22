@@ -8,9 +8,9 @@
     "name": "Monochrome",
     "displayName": "Monochrome (True FLAC & Hi-Fi)",
     "icon": "icon.png",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "author": "Viscousity",
-    "description": "True Lossless FLAC stream provider with precision studio duration matching, universal fallback, 0ms instant playback pre-warming, and high-res artwork enrichment. Honest, bit-accurate metadata on every stream.",
+    "description": "True Lossless FLAC stream provider with normalized second-level duration scoring and exclusive FLAC priority. Bit-perfect authentic CD audio (~25–50 MB).",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
@@ -24,7 +24,7 @@
       {
         "id": "FLAC",
         "label": "True Lossless FLAC · 16-bit / 44.1 kHz",
-        "description": "Bit-perfect authentic CD quality FLAC stream with universal 320k fallback (25–50 MB).",
+        "description": "Bit-perfect authentic CD quality FLAC stream from Monochrome (25–50 MB).",
         "kind": "lossless"
       },
       {
