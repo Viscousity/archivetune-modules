@@ -3,7 +3,7 @@
 # 🎵 Monochrome True Lossless & Hi-Fi Engine
 ### Official Audio Provider Module & Community Catalog for [ArchiveTune](https://github.com/rukamori/ArchiveTune) (Android)
 
-[![Version](https://img.shields.io/badge/version-2.7.0-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
+[![Version](https://img.shields.io/badge/version-2.7.1-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
 [![Format](https://img.shields.io/badge/Format-FLAC%2024--bit%20%2F%2016--bit-brightgreen.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
 [![Fallback](https://img.shields.io/badge/Failover-320kbps%20AAC-blue.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
 [![License](https://img.shields.io/badge/license-GPL--3.0-orange.svg?style=for-the-badge)](LICENSE)
@@ -69,7 +69,8 @@ Adding the catalog allows ArchiveTune to automatically check for updates and ref
 If you prefer installing the standalone module directly without adding a catalog:
 
 1. Download the latest compiled package:
-   * **[Download monochrome.arch (v2.7.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
+   * **[Download monochrome.arch (v2.7.1)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
+   *(SHA-256: `12b67ba2506a707a5e2efcb37e0feff78bbb7f9793c1b9e66747407715f80339`)*
 2. In **ArchiveTune**, navigate to **Settings › Modules › `+`**.
 3. Select **Import file** and choose the downloaded `monochrome.arch`.
 4. Review permissions and tap **Enable**!

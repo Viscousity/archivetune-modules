@@ -1,8 +1,8 @@
 /**
  * Monochrome Multi-Source Lossless Audio Provider for ArchiveTune
- * Version: 2.7.0
+ * Version: 2.7.1
  *
- * Core Capabilities in v2.7.0:
+ * Core Capabilities in v2.7.1:
  * - MULTI-SOURCE HYBRID LOSSLESS POOL:
  *   - Primary FLAC: tracks.monochrome.st (Tidal Master / Hi-Fi FLAC)
  *   - Secondary FLAC Mirror: monochrome.st/api (Automatic failover on 429/502)
@@ -579,70 +579,83 @@ async function searchTracks(query, limit, context) {
     }
 
     const cleanQ = cleanTitle(rawQuery);
+    const searchLimit = Math.max(limit || 8, 8);
 
     // 2. PARALLEL DUAL-ENGINE SEARCH via Promise.allSettled
-    const [monoSettled, saavnSettled] = await Promise.allSettled([
-      isMonochromeAvailable() ? searchMonochrome(cleanQ, 8, 2500) : Promise.resolve([]),
-      searchSaavn(cleanQ, 4, 1800)
-    ]);
+    // Preserve edition markers (e.g. "Radio Edit", "Remix", "Live") by querying rawQuery first
+    const monoPromise = (async () => {
+      if (!isMonochromeAvailable()) return [];
+      let res = await searchMonochrome(rawQuery, searchLimit, 2500);
+      if (res.length < 3 && cleanQ && cleanQ.toLowerCase() !== rawQuery.toLowerCase()) {
+        const cleanRes = await searchMonochrome(cleanQ, searchLimit, 2500);
+        const seen = new Set(res.map(t => String(t.id || t.trackId)));
+        for (const t of cleanRes) {
+          const tid = String(t.id || t.trackId);
+          if (!seen.has(tid)) {
+            res.push(t);
+            seen.add(tid);
+          }
+        }
+      }
+      return res;
+    })();
+
+    const saavnPromise = (async () => {
+      let res = await searchSaavn(rawQuery, 4, 1800);
+      if (res.length === 0 && cleanQ && cleanQ.toLowerCase() !== rawQuery.toLowerCase()) {
+        res = await searchSaavn(cleanQ, 4, 1800);
+      }
+      return res;
+    })();
+
+    const [monoSettled, saavnSettled] = await Promise.allSettled([monoPromise, saavnPromise]);
 
     const monoResults = monoSettled.status === 'fulfilled' && Array.isArray(monoSettled.value) ? monoSettled.value : [];
     const saavnResults = saavnSettled.status === 'fulfilled' && Array.isArray(saavnSettled.value) ? saavnSettled.value : [];
 
-    // Check Monochrome candidates for strict relevance (score >= 35)
-    let hasRelevantFlac = false;
+    // Process Monochrome FLAC results first (preserve intact titles with version/recording tags)
     for (const t of monoResults) {
-      const s = scoreCandidate(t, cleanQ, '', 0);
-      if (s >= 35) {
-        hasRelevantFlac = true;
-        break;
+      const rawId = String(t.id || t.trackId || '');
+      if (!rawId || seenIds.has(rawId)) continue;
+      seenIds.add(rawId);
+
+      const title = decodeHtml(t.title || '');
+      const artists = Array.isArray(t.artistNames) && t.artistNames.length > 0
+        ? t.artistNames.map(decodeHtml)
+        : (Array.isArray(t.artists) ? t.artists.map(a => typeof a === 'string' ? decodeHtml(a) : decodeHtml(a?.name || '')).filter(Boolean) : ['Unknown Artist']);
+      
+      const durationSec = toSeconds(t.duration);
+      const artworkUrl = t.artwork || (t.releaseId ? `https://tracks.monochrome.st/proxy/mi/${t.releaseId}-1A01.jpg` : null);
+
+      trackMetaCache.set(rawId, {
+        title,
+        artists,
+        durationSec,
+        album: t.albumTitle ? decodeHtml(t.albumTitle) : null,
+        artworkUrl
+      });
+
+      // Pre-warm 0ms cache for top 3 FLAC tracks
+      if (candidates.length < 3) {
+        streamUrlCache.set(rawId, createFlacStreamObject(rawId));
       }
+
+      const cand = {
+        id: rawId,
+        title,
+        artists: Array.from(new Set(artists)),
+        duration: durationSec,
+        durationMs: durationSec * 1000
+      };
+      if (t.albumTitle) cand.album = decodeHtml(t.albumTitle);
+      if (t.isrc || detectedIsrc) cand.isrc = t.isrc || detectedIsrc;
+      if (t.explicit !== undefined) cand.explicit = Boolean(t.explicit);
+      if (artworkUrl) cand.artworkUrl = artworkUrl;
+
+      candidates.push(cand);
     }
 
-    // Process Monochrome FLAC results first
-    if (hasRelevantFlac) {
-      for (const t of monoResults) {
-        const rawId = String(t.id || t.trackId || '');
-        if (!rawId || seenIds.has(rawId)) continue;
-        seenIds.add(rawId);
-
-        const title = decodeHtml(t.title || '');
-        const artists = Array.isArray(t.artistNames) && t.artistNames.length > 0
-          ? t.artistNames.map(decodeHtml)
-          : (Array.isArray(t.artists) ? t.artists.map(a => typeof a === 'string' ? decodeHtml(a) : decodeHtml(a?.name || '')).filter(Boolean) : ['Unknown Artist']);
-        
-        const durationSec = toSeconds(t.duration);
-        const artworkUrl = t.artwork || (t.releaseId ? `https://tracks.monochrome.st/proxy/mi/${t.releaseId}-1A01.jpg` : null);
-
-        trackMetaCache.set(rawId, {
-          title,
-          artists,
-          durationSec,
-          album: t.albumTitle ? decodeHtml(t.albumTitle) : null,
-          artworkUrl
-        });
-
-        // Pre-warm 0ms cache for top 3 FLAC tracks
-        if (candidates.length < 3) {
-          streamUrlCache.set(rawId, createFlacStreamObject(rawId));
-        }
-
-        const cand = {
-          id: rawId,
-          title,
-          artists: Array.from(new Set(artists)),
-          duration: durationSec,
-          durationMs: durationSec * 1000
-        };
-        if (t.albumTitle) cand.album = decodeHtml(t.albumTitle);
-        if (t.isrc || detectedIsrc) cand.isrc = t.isrc || detectedIsrc;
-        if (artworkUrl) cand.artworkUrl = artworkUrl;
-
-        candidates.push(cand);
-      }
-    }
-
-    // Process Saavn results (as failover or secondary parallel options)
+    // Process Saavn results (as failover or secondary parallel options; preserve intact titles)
     for (const item of saavnResults) {
       if (!item?.title || !item?.id) continue;
       const rawId = String(item.id);
@@ -650,7 +663,7 @@ async function searchTracks(query, limit, context) {
       seenIds.add(rawId);
 
       let artistName = item.subtitle ? item.subtitle.split(' - ')[0].trim() : 'Unknown Artist';
-      const title = decodeHtml(cleanTitle(item.title));
+      const title = decodeHtml(item.title); // Retain original version markers for ArchiveTune matcher
       const durationSec = toSeconds(item.more_info?.duration);
       const artworkUrl = item.image ? item.image.replace(/150x150\.jpg/g, '500x500.jpg') : null;
 
@@ -815,9 +828,13 @@ async function getTrackStreamUrl(trackId, quality = 'LOSSLESS_16', context = {})
     }
 
     // B3. Fuzzy Search on Monochrome Tidal
-    if (cleanQ && isMonochromeAvailable()) {
+    const rawTargetQuery = `${targetTitle} ${targetArtists}`.trim();
+    if ((rawTargetQuery || cleanQ) && isMonochromeAvailable()) {
       try {
-        const monoTracks = await searchMonochrome(cleanQ, 6, 2200);
+        let monoTracks = rawTargetQuery ? await searchMonochrome(rawTargetQuery, 6, 2200) : [];
+        if (monoTracks.length === 0 && cleanQ && cleanQ !== rawTargetQuery) {
+          monoTracks = await searchMonochrome(cleanQ, 6, 2200);
+        }
         if (monoTracks.length > 0) {
           let best = null;
           let bestScore = 35;
@@ -849,9 +866,12 @@ async function getTrackStreamUrl(trackId, quality = 'LOSSLESS_16', context = {})
     }
 
     // Automatic Failover to Authentic 320k Saavn
-    if (cleanQ) {
+    if (rawTargetQuery || cleanQ) {
       try {
-        let saavnResults = await searchSaavn(cleanQ, 3, 1800);
+        let saavnResults = rawTargetQuery ? await searchSaavn(rawTargetQuery, 3, 1800) : [];
+        if (saavnResults.length === 0 && cleanQ && cleanQ !== rawTargetQuery) {
+          saavnResults = await searchSaavn(cleanQ, 3, 1800);
+        }
         if (saavnResults.length === 0 && targetTitle) {
           saavnResults = await searchSaavn(cleanTitle(targetTitle), 3, 1800);
         }
