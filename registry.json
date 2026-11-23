@@ -1,17 +1,17 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-22T04:00:00Z",
+  "updated_at": "2026-11-23T02:10:00Z",
   "extensions": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
       "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.3.0",
+      "version": "2.4.0",
       "author": "Viscousity",
-      "description": "True Lossless FLAC stream provider with normalized second-level duration scoring and exclusive FLAC priority. Bit-perfect authentic CD audio (~25–50 MB).",
+      "description": "True Lossless FLAC stream provider with 429 rate limit circuit breaker, query deduplication, and resilient zero-downtime audio failover. Bit-perfect authentic CD audio (~25–50 MB).",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "4ecd8d820f4662cd3063c3a34a8b71abd48831c30a175acc2492bfe0b6d3d15e",
+      "sha256": "432e9d61756a1ead1fc836914fc4216ebdf80cfeb81cbe7e012de68f994eac96",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
@@ -32,7 +32,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-22T04:00:00Z"
+      "updated_at": "2026-11-23T02:10:00Z"
     }
   ]
 }
