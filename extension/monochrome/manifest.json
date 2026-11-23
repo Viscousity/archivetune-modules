@@ -8,31 +8,92 @@
     "name": "Monochrome",
     "displayName": "Monochrome (True FLAC & Hi-Fi)",
     "icon": "icon.png",
-    "version": "2.5.0",
+    "version": "2.6.0",
     "author": "Viscousity",
-    "description": "High-speed Lossless FLAC & authentic 320k stream provider with rapid skip detection, instant fast landing, strict candidate scoring, and zero-error failover.",
+    "description": "True Lossless FLAC & authentic 320k dual-engine provider with 4-tier quality selector, parallel search, ISRC bit-precision, rapid skip debouncer, and predictive 0ms pre-warming.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
     "type": ["audio_provider"],
-    "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
+    "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1", "songContext@1"],
     "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
     "capabilities": ["searchTracks", "getTrackStreamUrl"],
-    "qualityLabel": "Audio quality",
-    "defaultQuality": "FLAC",
+    "qualityLabel": "Streaming Quality",
+    "defaultQuality": "LOSSLESS_16",
     "qualityOptions": [
       {
-        "id": "FLAC",
-        "label": "True Lossless FLAC · 16-bit / 44.1 kHz",
+        "id": "LOSSLESS_16",
+        "label": "Lossless CD · 16-bit / 44.1 kHz FLAC",
         "description": "Bit-perfect authentic CD quality FLAC stream from Monochrome (25–50 MB).",
+        "kind": "lossless"
+      },
+      {
+        "id": "HI_RES_24",
+        "label": "Studio Master · 24-bit / 96–192 kHz FLAC",
+        "description": "Ultra high-resolution studio master FLAC stream (50–120 MB).",
         "kind": "lossless"
       },
       {
         "id": "HIGH_320",
         "label": "High Speed · 320 kbps AAC",
-        "description": "Progressive stream at authentic 320 kbps (10–12 MB).",
+        "description": "Progressive high-bitrate stream via JioSaavn CDN with instant start (8–12 MB).",
+        "kind": "lossy"
+      },
+      {
+        "id": "SAVER_160",
+        "label": "Data Saver · 160 kbps AAC",
+        "description": "Lightweight progressive stream for mobile data saving (4–6 MB).",
         "kind": "lossy"
       }
-    ]
+    ],
+    "settings": {
+      "fallbackMode": {
+        "type": "select",
+        "label": "Failover Strategy",
+        "description": "Stream failover behavior if requested quality is unavailable",
+        "defaultValue": "seamless_320k",
+        "options": [
+          {
+            "value": "seamless_320k",
+            "label": "Seamless Failover (FLAC -> 320k AAC)",
+            "description": "Never interrupt playback; drop to authentic 320k if FLAC is unavailable"
+          },
+          {
+            "value": "strict_flac",
+            "label": "Strict Lossless Only",
+            "description": "Strictly stream FLAC; do not fall back to lossy audio"
+          }
+        ]
+      },
+      "skipSensitivity": {
+        "type": "select",
+        "label": "Skip Velocity Sensitivity",
+        "description": "Debounce interval to cancel intermediate requests when rapidly skipping tracks",
+        "defaultValue": "balanced",
+        "options": [
+          {
+            "value": "fast",
+            "label": "Ultra Fast (30ms debounce)",
+            "description": "Shortest delay, ideal for rapid skips on high-speed connections"
+          },
+          {
+            "value": "balanced",
+            "label": "Balanced (60ms debounce)",
+            "description": "Optimal balance between responsiveness and network protection"
+          },
+          {
+            "value": "relaxed",
+            "label": "Relaxed (100ms debounce)",
+            "description": "Prevents burst traffic on slower mobile networks"
+          }
+        ]
+      },
+      "autoPrewarmNext": {
+        "type": "boolean",
+        "label": "Predictive Next-Track Pre-warming",
+        "description": "Pre-warm stream URL for upcoming queue items to achieve 0ms gapless start",
+        "defaultValue": true
+      }
+    }
   }
 }

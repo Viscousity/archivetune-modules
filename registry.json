@@ -1,17 +1,17 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-23T02:20:00Z",
+  "updated_at": "2026-11-23T02:32:00Z",
   "extensions": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
       "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.5.0",
+      "version": "2.6.0",
       "author": "Viscousity",
-      "description": "High-speed Lossless FLAC & authentic 320k stream provider with rapid skip detection, instant fast landing, strict candidate scoring, and zero-error failover.",
+      "description": "True Lossless FLAC & authentic 320k dual-engine provider with 4-tier quality selector, parallel search, ISRC bit-precision, rapid skip debouncer, and predictive 0ms pre-warming.",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "e060c13139d2004a7bb7754285ebb2ff908abbaf946e411aa54c436576312656",
+      "sha256": "c51e1fd5a15d9b296dd2810f310952ed06b837b89bd73b5137e50e531da2ee06",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
@@ -32,7 +32,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-23T02:20:00Z"
+      "updated_at": "2026-11-23T02:32:00Z"
     }
   ]
 }
