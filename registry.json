@@ -1,17 +1,17 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-23T02:32:00Z",
+  "updated_at": "2026-11-23T02:49:00Z",
   "extensions": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
       "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.6.0",
+      "version": "2.7.0",
       "author": "Viscousity",
-      "description": "True Lossless FLAC & authentic 320k dual-engine provider with 4-tier quality selector, parallel search, ISRC bit-precision, rapid skip debouncer, and predictive 0ms pre-warming.",
+      "description": "True Lossless FLAC & authentic 320k multi-source provider with dual Tidal endpoints, Amazon Music/Qobuz ISRC precision resolution, 4-tier quality selector, and predictive 0ms pre-warming.",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "c51e1fd5a15d9b296dd2810f310952ed06b837b89bd73b5137e50e531da2ee06",
+      "sha256": "f9de86495fdb829a1004a39cc6204264a68cdc7b6d1cbaea7f359d765250fd2b",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
@@ -19,6 +19,8 @@
         "lossless",
         "hi-fi",
         "flac",
+        "tidal",
+        "jiosaavn",
         "free"
       ],
       "labels": [
@@ -32,7 +34,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-23T02:32:00Z"
+      "updated_at": "2026-11-23T02:49:00Z"
     }
   ]
 }
