@@ -1,17 +1,17 @@
 <div align="center">
 
-# 🎵 Monochrome True Lossless & Hi-Fi Engine
+# 🎵 Monochrome Pure Lossless FLAC Engine
 ### Official Audio Provider Module & Community Catalog for [ArchiveTune](https://github.com/rukamori/ArchiveTune) (Android)
 
-[![Version](https://img.shields.io/badge/version-2.7.1-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
-[![Format](https://img.shields.io/badge/Format-FLAC%2024--bit%20%2F%2016--bit-brightgreen.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
-[![Fallback](https://img.shields.io/badge/Failover-320kbps%20AAC-blue.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
+[![Version](https://img.shields.io/badge/version-2.8.0-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
+[![Format](https://img.shields.io/badge/Format-Pure%20Lossless%20FLAC-brightgreen.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
+[![Fallback](https://img.shields.io/badge/Fallback-Native%20YouTube%20Music-red.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
 [![License](https://img.shields.io/badge/license-GPL--3.0-orange.svg?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-ArchiveTune%20Android-informational.svg?style=for-the-badge)](https://github.com/rukamori/ArchiveTune)
 
 <p align="center">
-  <b>Stream bit-perfect 16-bit / 24-bit Lossless FLAC and authentic 320 kbps AAC directly inside ArchiveTune.</b><br/>
-  Featuring parallel dual-engine search, ISRC studio-master resolution (Amazon Music & Qobuz cross-matched), multi-mirror redundancy, 4-tier quality selector, and predictive 0ms gapless pre-warming.
+  <b>Stream 100% bit-perfect 16-bit CD Lossless & 24-bit Studio Master FLAC directly inside ArchiveTune.</b><br/>
+  Featuring parallel multi-mirror search, ISRC studio-master cross-resolution (Amazon Music, Qobuz & Tidal matched), strict candidate scoring, per-track acoustic metadata, and seamless zero-error YouTube Music fallback.
 </p>
 
 ---
@@ -24,10 +24,9 @@
 - [How to Install in ArchiveTune](#-how-to-install-in-archivetune)
   - [Method 1: Add as Catalog (Recommended)](#method-1-add-as-catalog-recommended)
   - [Method 2: Direct .arch Package Import](#method-2-direct-arch-package-import)
-- [Architecture & Multi-Source Failover](#-architecture--multi-source-failover)
-- [Audio Quality Tiers](#-audio-quality-tiers)
-- [Module Settings](#-module-settings)
-- [Key Features](#-key-features)
+- [Fixing the "Unsupported Functions" Error](#-fixing-the-unsupported-functions-error)
+- [Architecture & Failover](#-architecture--failover)
+- [Audio Quality Tiers & Settings](#-audio-quality-tiers--settings)
 - [Troubleshooting & Common Questions](#-troubleshooting--common-questions)
 - [Building & Packaging](#-building--packaging)
 
@@ -35,11 +34,14 @@
 
 ## 🌟 Overview
 
-**Monochrome (True FLAC & Hi-Fi)** is an advanced native audio provider module for ArchiveTune. It eliminates the frustration of lossy streaming, broken mirrors, and rate limits by unifying:
-1. **Lossless FLAC Master Tiers:** Tidal Hi-Fi & Studio Masters (up to 24-bit / 192 kHz).
-2. **Multi-Mirror Redundancy:** Automatic switching between primary and backup Tidal endpoints.
-3. **Cross-Catalog ISRC Matching:** Leverages international ISRC codes so tracks from Amazon Music Ultra HD, Qobuz, and Apple Music resolve to bit-perfect studio master FLACs in < 300ms.
-4. **Resilient 320k Failover:** Automatically switches to authentic 320 kbps AAC via JioSaavn CDN if FLAC encounters temporary rate limits—ensuring music **never halts**.
+**Monochrome (Pure Lossless FLAC)** is a dedicated high-fidelity native audio provider module for ArchiveTune. It eliminates lossy, muddy streams and rate limits by delivering:
+
+1. **100% Pure Lossless FLAC:** Bit-perfect 16-bit / 44.1 kHz (CD quality) and 24-bit / 96–192 kHz (Studio Master) lossless audio only. (All muddy lossy sources have been completely purged).
+2. **Parallel Multi-Mirror Search:** Concurrently queries multiple high-speed lossless endpoints (`tracks.monochrome.st`, `monochrome.st/api`, and `sp-flac.monochrome.st`) with request pacing and 60-second circuit breakers to eliminate HTTP 429 rate limits.
+3. **Cross-Catalog ISRC Matching:** Leverages international 12-character ISRC codes so releases from Amazon Music Ultra HD, Qobuz, Apple Music, and Tidal resolve to the exact bit-perfect studio recording in < 250ms.
+4. **Strict Candidate Scoring:** Verifies normalized title, primary artists, and duration (within ±5 seconds) to prevent incorrect covers or mismatched live recordings.
+5. **Accurate Per-Track Metadata:** Each track reports distinct, authentic technical audio specs (sample rate, bitrate, MIME `audio/flac`, and codec `flac`).
+6. **Seamless Zero-Error YouTube Music Fallback:** If no verified FLAC match exists or if playback fails, ArchiveTune silently and smoothly plays from native YouTube Music without interrupting playback or throwing error dialogs.
 
 ---
 
@@ -60,7 +62,7 @@ Adding the catalog allows ArchiveTune to automatically check for updates and ref
    > [!IMPORTANT]
    > **Do not** paste the web repository link (`https://github.com/...`). ArchiveTune requires the direct raw JSON file above!
 6. Tap **Confirm / Add**.
-7. Tap the newly added **ArchiveTune Community Modules** card and tap **Install** on **Monochrome (True FLAC & Hi-Fi)**.
+7. Tap the newly added **ArchiveTune Community Modules** card and tap **Install / Update** on **Monochrome (Pure Lossless FLAC)**.
 
 ---
 
@@ -69,15 +71,34 @@ Adding the catalog allows ArchiveTune to automatically check for updates and ref
 If you prefer installing the standalone module directly without adding a catalog:
 
 1. Download the latest compiled package:
-   * **[Download monochrome.arch (v2.7.1)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
-   *(SHA-256: `12b67ba2506a707a5e2efcb37e0feff78bbb7f9793c1b9e66747407715f80339`)*
+   * **[Download monochrome.arch (v2.8.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
+   *(SHA-256: `88d74531134b9acbb0a67c51ebb74abaf13f877420c00f637774ee94b7b30c80`)*
 2. In **ArchiveTune**, navigate to **Settings › Modules › `+`**.
 3. Select **Import file** and choose the downloaded `monochrome.arch`.
 4. Review permissions and tap **Enable**!
 
 ---
 
-## ⚙️ Architecture & Multi-Source Failover
+## 🚨 Fixing the "Unsupported Functions" Error
+
+If your ArchiveTune screen shows a red banner saying:
+> *"This entry does not provide the supported track-matching and streaming functions."*
+
+This error occurred on older versions (e.g. v2.5.0 / v2.7.0) due to cached update failures or older app feature checks. Here is how to immediately fix it:
+
+1. **Dismiss the error banner:** Tap the **`X`** button on the right side of the red banner.
+2. **Refresh the catalog:**
+   - In **Settings › Modules**, tap on the catalog header.
+   - Tap the **Refresh** (circular arrow) button to fetch the latest `v2.8.0` manifest.
+3. **If the Install button is still disabled:**
+   - Go to **Settings › Modules**, tap the three dots on the Monochrome module, and select **Remove**.
+   - Download the new [monochrome.arch (v2.8.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch).
+   - Tap **`+` › Import file**, select `monochrome.arch`, and tap **Install & Enable**.
+   - The module will install cleanly as **v2.8.0** with full compatibility!
+
+---
+
+## ⚙️ Architecture & Failover
 
 ```
                      ┌──────────────────────────────────────────┐
@@ -88,113 +109,78 @@ If you prefer installing the standalone module directly without adding a catalog
                         │   Detect ISRC & Clean Title/Artist│
                         └─────────────────┬─────────────────┘
                                           │
-                    ┌─────────────────────┴─────────────────────┐
-                    ▼                                           ▼
-      ┌───────────────────────────┐               ┌───────────────────────────┐
-      │   Monochrome Tidal FLAC   │               │   JioSaavn Progressive    │
-      │   (Primary + Backup API)  │               │   (Authentic 320k / 160k) │
-      └─────────────┬─────────────┘               └─────────────┬─────────────┘
-                    │                                           │
-                    │ [Parallel Promise.allSettled (~1s)]       │
-                    └─────────────────────┬─────────────────────┘
-                                          │
-                         ┌────────────────┴────────────────┐
-                         ▼                                 ▼
-              [FLAC Candidate Available?]       [User selected HIGH_320 / 160?]
-                         │                                 │
-                 YES ────┴──── NO                          ▼
-                  │            │                 Instant 320k / 160k Stream
-                  ▼            ▼                 (0ms latency, ~10 MB)
-         Test Mirror Reachability
-                  │
-        ┌─────────┴─────────┐
-        ▼                   ▼
-    [Healthy]          [429 / 502 / Offline]
-        │                   │
-        ▼                   ▼
-   Bit-Perfect FLAC   Seamless 320k Failover
-   (16-bit / 24-bit)  (Playback never stops)
+                     ┌────────────────────┴────────────────────┐
+                     ▼                                         ▼
+         [ISRC Code Detected?]                      [Standard Text Search]
+                     │                                         │
+        YES ─────────┴───────── NO                             │
+         │                      │                              │
+         ▼                      └──────────────┬───────────────┘
+  Query isrc:<ISRC>                            ▼
+  on Active FLAC Mirror          Parallel Multi-Mirror Search
+  (< 250ms direct match)        (tracks.monochrome.st, mirror API,
+         │                       sp-flac CDN via Promise.allSettled)
+         │                                     │
+         └──────────────────────┬──────────────┘
+                                │
+                                ▼
+                   [Candidate Strict Verification]
+                   - Title normalization & edition match
+                   - Primary artist verification
+                   - Duration match within ±5 seconds
+                                │
+                     ┌──────────┴──────────┐
+                     ▼                     ▼
+          [Strict Match Passed?]   [No FLAC Match Found?]
+                     │                     │
+            YES ─────┴───── NO             ▼
+             │               │    Return empty list []
+             ▼               │    ArchiveTune transparently
+   Pre-Flight Byte-Range     │    plays from native YouTube Music!
+   Reachability Check        │    (Zero errors, zero halts)
+             │               │
+    PASS ────┴──── FAIL      │
+     │              │        │
+     ▼              └────────┘
+Stream Bit-Perfect FLAC
+(16-bit CD or 24-bit Hi-Res)
 ```
 
 ---
 
-## 🎧 Audio Quality Tiers
+## 🎛️ Audio Quality Tiers & Settings
 
-You can customize your desired streaming bitrate directly inside **ArchiveTune › Module Settings › Streaming Quality**:
+### Quality Options
+* **Lossless CD · 16-bit / 44.1 kHz FLAC (`LOSSLESS_16`):** Authentic bit-perfect CD audio stream (1,411 kbps, ~25–50 MB).
+* **Studio Master · 24-bit / 96–192 kHz FLAC (`HI_RES_24`):** Ultra high-resolution studio master recording (4,608 kbps+, ~50–120 MB).
 
-| Tier ID | Display Name | Quality & Codec | Typical File Size | Best For |
-| :--- | :--- | :--- | :--- | :--- |
-| `LOSSLESS_16` *(Default)* | **Lossless CD** | 16-bit / 44.1 kHz FLAC (1411 kbps) | ~25–50 MB | Audiophile listening, home Wi-Fi, studio monitors |
-| `HI_RES_24` | **Studio Master** | 24-bit / 96–192 kHz FLAC (up to 4608 kbps) | ~50–120 MB | External DACs, high-end Hi-Fi headphones |
-| `HIGH_320` | **High Speed** | 320 kbps AAC (`mp4a.40.2`) | ~8–12 MB | Fast instant start, mobile data, balanced fidelity |
-| `SAVER_160` | **Data Saver** | 160 kbps AAC (`mp4a.40.2`) | ~4–6 MB | Low-bandwidth mobile networks, minimal data usage |
-
----
-
-## 🛠️ Module Settings
-
-ArchiveTune natively provides a settings panel for Monochrome under **Settings › Modules › Monochrome › Configure**:
-
-* **Failover Strategy (`fallbackMode`)**:
-  * `Seamless Failover (FLAC -> 320k AAC)` *(Default)*: If Tidal/Monochrome is rate-limited (429) or unavailable, the module transparently drops to JioSaavn authentic 320k AAC so music never cuts out.
-  * `Strict Lossless Only`: Strictly serves FLAC. If lossless is unreachable, playback fails over cleanly without downgrading to lossy audio.
-* **Skip Velocity Sensitivity (`skipSensitivity`)**:
-  * `Ultra Fast (30ms)`: Minimal debounce interval for fiber / high-speed Wi-Fi.
-  * `Balanced (60ms)` *(Default)*: Ideal responsiveness for normal browsing.
-  * `Relaxed (100ms)`: Debounces rapid skipping to conserve mobile data and prevent burst traffic.
-* **Predictive Next-Track Pre-warming (`autoPrewarmNext`)**:
-  * Toggles background stream pre-fetching for upcoming tracks in your queue, enabling **0ms gapless playback**.
+### Module Settings
+* **Resolution Preference:**
+  * `Adaptive (Studio Master 24-bit if available, else CD 16-bit)` *(Default)*: Automatically streams the highest available lossless fidelity.
+  * `Standard CD Lossless (16-bit / 44.1 kHz)`: Limits streaming strictly to 16-bit CD quality.
+  * `Strict Studio Master (24-bit only)`: Streams only true 24-bit studio masters.
+* **Skip Velocity Sensitivity:**
+  * `Ultra Fast (30ms debounce)` *(Default)*: Fastest landing, immediately cancels obsolete in-flight requests when skipping rapidly.
+  * `Balanced (60ms debounce)`: Recommended for everyday cellular usage.
+  * `Relaxed (100ms debounce)`: Protects slower network connections from burst requests.
+* **Predictive Next-Track Pre-warming:** Resolves the upcoming queue item in the background for instant 0ms gapless playback transitions.
 
 ---
 
-## ✨ Key Features
+## 🛠️ Building & Packaging
 
-* **Amazon Music & Qobuz ISRC Cross-Matching**: 
-  Songs from Amazon Music Ultra HD or Qobuz share standard international ISRC codes. When an ISRC is provided, Monochrome matches the exact studio master recording in under 300ms without relying on error-prone fuzzy text matching.
-* **Parallel Dual-Engine Search**:
-  Queries both Monochrome Lossless and JioSaavn simultaneously with `Promise.allSettled`. JioSaavn returns in ~200ms while Monochrome resolves FLAC in ~1000ms, populating high-resolution search results in record time.
-* **Smart Skip Debouncer**:
-  Rapidly pressing Next > Next > Next immediately cancels previous in-flight requests via `AbortController`, preventing socket clogging and Cloudflare 429 rate limit triggers.
-* **Zero 429 Lockouts**:
-  An intelligent circuit breaker tracks rate limits with a 60-second cooldown timer. It rotates to secondary mirror endpoints and automatically restores FLAC playback once the rate limit clears.
+To compile and package the module from source:
 
----
-
-## ❓ Troubleshooting & Common Questions
-
-#### Q: I see "This file or URL does not contain a valid supported module or catalog"?
-**A:** This error occurs if you paste the webpage URL (`https://github.com/...`) into ArchiveTune instead of the raw JSON file. 
-* To add the **Catalog**: Use `https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/registry.json`.
-* To import the **Module**: Download `monochrome.arch` and choose **Import file**.
-
-#### Q: How do I update to the latest version?
-1. In ArchiveTune, go to **Settings › Modules › Catalogs**.
-2. Tap **ArchiveTune Community Modules** and tap **Refresh catalog**.
-3. Tap **Update / Install** on the Monochrome card.
-
-#### Q: Can I stream Amazon Music tracks directly?
-**A:** Amazon Music encrypts its audio chunks using Google Widevine DRM, which requires a hardware/software Content Decryption Module (CDM) unavailable in mobile JS runtimes. However, Monochrome resolves the **identical studio master FLAC** using the track's ISRC code across the Tidal/Qobuz catalog.
-
----
-
-## 🔨 Building & Packaging
-
-The module is packaged into the official ArchiveTune `.arch` archive format (ZIP bundle containing `manifest.json`, `provider.js`, and `icon.png` with internal SHA-256 hashes).
-
-To re-package after editing:
 ```bash
+# Package into distribution .arch file
 python scripts/package_module.py extension/monochrome dist/monochrome.arch
-```
 
-To calculate the new package hash:
-```bash
-certutil -hashfile dist/monochrome.arch SHA256
+# Inspect and verify package integrity
+python scripts/package_module.py --inspect dist/monochrome.arch
 ```
 
 ---
 
-## 📜 License & Credits
+## 📄 License
 
-* **Author:** Viscousity
-* **License:** GNU General Public License v3.0 ([GPL-3.0](LICENSE))
-* **Application:** Designed specifically for [ArchiveTune](https://github.com/rukamori/ArchiveTune) by Rukamori.
+GPL-3.0 License. See [LICENSE](LICENSE) for details.

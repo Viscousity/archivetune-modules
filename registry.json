@@ -1,34 +1,35 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-23T10:50:00Z",
+  "updated_at": "2026-11-24T02:30:00Z",
   "modules": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.7.1",
+      "display_name": "Monochrome (Pure Lossless FLAC)",
+      "version": "2.8.0",
       "author": "Viscousity",
-      "description": "True Lossless FLAC & authentic 320k multi-source provider with dual Tidal endpoints, Amazon Music/Qobuz ISRC precision resolution, 4-tier quality selector, and predictive 0ms pre-warming.",
+      "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "12b67ba2506a707a5e2efcb37e0feff78bbb7f9793c1b9e66747407715f80339",
+      "sha256": "88d74531134b9acbb0a67c51ebb74abaf13f877420c00f637774ee94b7b30c80",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
         "monochrome",
         "lossless",
-        "hi-fi",
+        "hi-res",
         "flac",
         "tidal",
-        "jiosaavn",
+        "studio-master",
         "free"
       ],
       "labels": [
         "FLAC",
         "Lossless",
-        "Hi-Fi",
+        "Hi-Res",
+        "Studio Master",
         "Free"
       ],
       "capabilities": [
@@ -36,36 +37,37 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-23T10:50:00Z"
+      "updated_at": "2026-11-24T02:30:00Z"
     }
   ],
   "extensions": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (True FLAC & Hi-Fi)",
-      "version": "2.7.1",
+      "display_name": "Monochrome (Pure Lossless FLAC)",
+      "version": "2.8.0",
       "author": "Viscousity",
-      "description": "True Lossless FLAC & authentic 320k multi-source provider with dual Tidal endpoints, Amazon Music/Qobuz ISRC precision resolution, 4-tier quality selector, and predictive 0ms pre-warming.",
+      "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "12b67ba2506a707a5e2efcb37e0feff78bbb7f9793c1b9e66747407715f80339",
+      "sha256": "88d74531134b9acbb0a67c51ebb74abaf13f877420c00f637774ee94b7b30c80",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
         "monochrome",
         "lossless",
-        "hi-fi",
+        "hi-res",
         "flac",
         "tidal",
-        "jiosaavn",
+        "studio-master",
         "free"
       ],
       "labels": [
         "FLAC",
         "Lossless",
-        "Hi-Fi",
+        "Hi-Res",
+        "Studio Master",
         "Free"
       ],
       "capabilities": [
@@ -73,7 +75,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-23T10:50:00Z"
+      "updated_at": "2026-11-24T02:30:00Z"
     }
   ]
 }

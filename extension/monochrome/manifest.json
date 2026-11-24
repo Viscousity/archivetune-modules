@@ -6,17 +6,17 @@
   "module": {
     "id": "community.provider.monochrome",
     "name": "Monochrome",
-    "displayName": "Monochrome (True FLAC & Hi-Fi)",
+    "displayName": "Monochrome (Pure Lossless FLAC)",
     "icon": "icon.png",
-    "version": "2.7.1",
+    "version": "2.8.0",
     "author": "Viscousity",
-    "description": "True Lossless FLAC & authentic 320k multi-source provider with dual Tidal endpoints, Amazon Music/Qobuz ISRC precision resolution, 4-tier quality selector, and predictive 0ms pre-warming.",
+    "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
     "type": ["audio_provider"],
     "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
-    "labels": ["FLAC", "Lossless", "Hi-Fi", "Free"],
+    "labels": ["FLAC", "Lossless", "Hi-Res", "Studio Master", "Free"],
     "capabilities": ["searchTracks", "getTrackStreamUrl"],
     "qualityLabel": "Streaming Quality",
     "defaultQuality": "LOSSLESS_16",
@@ -24,44 +24,37 @@
       {
         "id": "LOSSLESS_16",
         "label": "Lossless CD · 16-bit / 44.1 kHz FLAC",
-        "description": "Bit-perfect authentic CD quality FLAC stream from Monochrome (25–50 MB).",
+        "description": "Bit-perfect authentic CD quality FLAC stream (25–50 MB).",
         "kind": "lossless"
       },
       {
         "id": "HI_RES_24",
         "label": "Studio Master · 24-bit / 96–192 kHz FLAC",
-        "description": "Ultra high-resolution studio master FLAC stream (50–120 MB).",
+        "description": "Ultra high-resolution studio master 24-bit FLAC stream (50–120 MB).",
         "kind": "lossless"
-      },
-      {
-        "id": "HIGH_320",
-        "label": "High Speed · 320 kbps AAC",
-        "description": "Progressive high-bitrate stream via JioSaavn CDN with instant start (8–12 MB).",
-        "kind": "lossy"
-      },
-      {
-        "id": "SAVER_160",
-        "label": "Data Saver · 160 kbps AAC",
-        "description": "Lightweight progressive stream for mobile data saving (4–6 MB).",
-        "kind": "lossy"
       }
     ],
     "settings": {
-      "fallbackMode": {
+      "targetResolution": {
         "type": "select",
-        "label": "Failover Strategy",
-        "description": "Stream failover behavior if requested quality is unavailable",
-        "defaultValue": "seamless_320k",
+        "label": "Resolution Preference",
+        "description": "Preferred audio resolution profile when streaming FLAC",
+        "defaultValue": "auto",
         "options": [
           {
-            "value": "seamless_320k",
-            "label": "Seamless Failover (FLAC -> 320k AAC)",
-            "description": "Never interrupt playback; drop to authentic 320k if FLAC is unavailable"
+            "value": "auto",
+            "label": "Adaptive (Studio Master 24-bit if available, else CD 16-bit)",
+            "description": "Automatically stream highest available lossless fidelity"
           },
           {
-            "value": "strict_flac",
-            "label": "Strict Lossless Only",
-            "description": "Strictly stream FLAC; do not fall back to lossy audio"
+            "value": "strict_cd",
+            "label": "Standard CD Lossless (16-bit / 44.1 kHz)",
+            "description": "Consistent CD-quality lossless streaming"
+          },
+          {
+            "value": "strict_hires",
+            "label": "Strict Studio Master (24-bit only)",
+            "description": "Stream strictly 24-bit Hi-Res master audio"
           }
         ]
       },
@@ -69,7 +62,7 @@
         "type": "select",
         "label": "Skip Velocity Sensitivity",
         "description": "Debounce interval to cancel intermediate requests when rapidly skipping tracks",
-        "defaultValue": "balanced",
+        "defaultValue": "fast",
         "options": [
           {
             "value": "fast",
