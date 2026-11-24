@@ -579,12 +579,4 @@ async function getTrackStreamUrl(trackId, quality = 'LOSSLESS_16', context = {})
   }
 }
 
-/**
- * ArchiveTune 16.1.0 Playback Error Handler:
- * Instructs ArchiveTune to smoothly fall back to YouTube Music on playback failure without error banners.
- */
-function onPlaybackError(error, context) {
-  return 'fallback';
-}
-
-module.exports = { searchTracks, getTrackStreamUrl, onPlaybackError };
+module.exports = { searchTracks, getTrackStreamUrl };

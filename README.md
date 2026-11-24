@@ -3,7 +3,7 @@
 # 🎵 Monochrome Pure Lossless FLAC Engine
 ### Official Audio Provider Module & Community Catalog for [ArchiveTune](https://github.com/rukamori/ArchiveTune) (Android)
 
-[![Version](https://img.shields.io/badge/version-2.8.0-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
+[![Version](https://img.shields.io/badge/version-2.8.1-gold.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules/releases)
 [![Format](https://img.shields.io/badge/Format-Pure%20Lossless%20FLAC-brightgreen.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
 [![Fallback](https://img.shields.io/badge/Fallback-Native%20YouTube%20Music-red.svg?style=for-the-badge)](https://github.com/Viscousity/archivetune-modules)
 [![License](https://img.shields.io/badge/license-GPL--3.0-orange.svg?style=for-the-badge)](LICENSE)
@@ -71,8 +71,8 @@ Adding the catalog allows ArchiveTune to automatically check for updates and ref
 If you prefer installing the standalone module directly without adding a catalog:
 
 1. Download the latest compiled package:
-   * **[Download monochrome.arch (v2.8.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
-   *(SHA-256: `88d74531134b9acbb0a67c51ebb74abaf13f877420c00f637774ee94b7b30c80`)*
+   * **[Download monochrome.arch (v2.8.1)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch)**
+   *(SHA-256: `767703c1503ed182b10b18ee74dcf5192d1779ab3c44e0435cb0b17f762c63af`)*
 2. In **ArchiveTune**, navigate to **Settings › Modules › `+`**.
 3. Select **Import file** and choose the downloaded `monochrome.arch`.
 4. Review permissions and tap **Enable**!
@@ -89,12 +89,12 @@ This error occurred on older versions (e.g. v2.5.0 / v2.7.0) due to cached updat
 1. **Dismiss the error banner:** Tap the **`X`** button on the right side of the red banner.
 2. **Refresh the catalog:**
    - In **Settings › Modules**, tap on the catalog header.
-   - Tap the **Refresh** (circular arrow) button to fetch the latest `v2.8.0` manifest.
+   - Tap the **Refresh** (circular arrow) button to fetch the latest `v2.8.1` manifest.
 3. **If the Install button is still disabled:**
    - Go to **Settings › Modules**, tap the three dots on the Monochrome module, and select **Remove**.
-   - Download the new [monochrome.arch (v2.8.0)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch).
+   - Download the new [monochrome.arch (v2.8.1)](https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch).
    - Tap **`+` › Import file**, select `monochrome.arch`, and tap **Install & Enable**.
-   - The module will install cleanly as **v2.8.0** with full compatibility!
+   - The module will install cleanly as **v2.8.1** with full compatibility!
 
 ---
 
