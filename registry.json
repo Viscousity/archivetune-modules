@@ -1,19 +1,19 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-24T02:30:00Z",
+  "updated_at": "2026-11-24T15:25:00Z",
   "modules": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
       "display_name": "Monochrome (Pure Lossless FLAC)",
-      "version": "2.8.1",
+      "version": "2.8.2",
       "author": "Viscousity",
-      "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
+      "description": "Pure Bit-Perfect Lossless FLAC audio provider with adaptive resilient search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "767703c1503ed182b10b18ee74dcf5192d1779ab3c44e0435cb0b17f762c63af",
+      "sha256": "39c87951f02a9dab38de4feecbcd3b25d58800e16b5c054c0704f61029a9fdc6",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
@@ -37,7 +37,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-24T02:30:00Z"
+      "updated_at": "2026-11-24T15:25:00Z"
     }
   ],
   "extensions": [
@@ -45,13 +45,13 @@
       "id": "community.provider.monochrome",
       "name": "monochrome",
       "display_name": "Monochrome (Pure Lossless FLAC)",
-      "version": "2.8.1",
+      "version": "2.8.2",
       "author": "Viscousity",
-      "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
+      "description": "Pure Bit-Perfect Lossless FLAC audio provider with adaptive resilient search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "767703c1503ed182b10b18ee74dcf5192d1779ab3c44e0435cb0b17f762c63af",
+      "sha256": "39c87951f02a9dab38de4feecbcd3b25d58800e16b5c054c0704f61029a9fdc6",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
@@ -75,7 +75,7 @@
         "getTrackStreamUrl"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-24T02:30:00Z"
+      "updated_at": "2026-11-24T15:25:00Z"
     }
   ]
 }

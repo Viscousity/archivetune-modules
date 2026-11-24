@@ -8,9 +8,9 @@
     "name": "Monochrome",
     "displayName": "Monochrome (Pure Lossless FLAC)",
     "icon": "icon.png",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "author": "Viscousity",
-    "description": "Pure Bit-Perfect Lossless FLAC audio provider with multi-mirror parallel search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
+    "description": "Pure Bit-Perfect Lossless FLAC audio provider with adaptive resilient search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
     "homepage": "https://github.com/Viscousity/archivetune-modules",
     "repository": "https://github.com/Viscousity/archivetune-modules",
     "license": "GPL-3.0",
@@ -39,14 +39,14 @@
     "qualityOptions": [
       {
         "id": "LOSSLESS_16",
-        "label": "Lossless CD \u00b7 16-bit / 44.1 kHz FLAC",
-        "description": "Bit-perfect authentic CD quality FLAC stream (25\u201350 MB).",
+        "label": "Lossless CD · 16-bit / 44.1 kHz FLAC",
+        "description": "Bit-perfect authentic CD quality FLAC stream (25–50 MB).",
         "kind": "lossless"
       },
       {
         "id": "HI_RES_24",
-        "label": "Studio Master \u00b7 24-bit / 96\u2013192 kHz FLAC",
-        "description": "Ultra high-resolution studio master 24-bit FLAC stream (50\u2013120 MB).",
+        "label": "Studio Master · 24-bit / 96–192 kHz FLAC",
+        "description": "Ultra high-resolution studio master 24-bit FLAC stream (50–120 MB).",
         "kind": "lossless"
       }
     ],
@@ -96,12 +96,6 @@
             "description": "Prevents burst traffic on slower mobile networks"
           }
         ]
-      },
-      "autoPrewarmNext": {
-        "type": "boolean",
-        "label": "Predictive Next-Track Pre-warming",
-        "description": "Pre-warm stream URL for upcoming queue items to achieve 0ms gapless start",
-        "defaultValue": true
       }
     }
   }
