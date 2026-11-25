@@ -1,27 +1,27 @@
 {
   "name": "ArchiveTune Community Modules",
   "version": 1,
-  "updated_at": "2026-11-24T15:25:00Z",
+  "updated_at": "2026-11-25T08:55:00Z",
   "modules": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Pure Lossless FLAC)",
-      "version": "2.8.2",
+      "display_name": "Monochrome (Lossless FLAC Engine)",
+      "version": "3.0.0",
       "author": "Viscousity",
-      "description": "Pure Bit-Perfect Lossless FLAC audio provider with adaptive resilient search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
+      "description": "Ultra-fast parallel dual-engine Lossless & Hi-Res FLAC provider (Qobuz Hi-Res up to 24-bit/192 kHz + Monochrome Native FLAC) with speculative stream pre-warming, authentic per-track FLAC metadata, and seamless zero-error YouTube Music failover.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "39c87951f02a9dab38de4feecbcd3b25d58800e16b5c054c0704f61029a9fdc6",
+      "sha256": "61cde9b9192d89f73f3fefde263dcdc75dff7fbe0dd711b85433c75209a37771",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
         "monochrome",
+        "qobuz",
         "lossless",
         "hi-res",
         "flac",
-        "tidal",
         "studio-master",
         "free"
       ],
@@ -29,37 +29,38 @@
         "FLAC",
         "Lossless",
         "Hi-Res",
-        "Studio Master",
+        "Qobuz",
         "Free"
       ],
       "capabilities": [
         "searchTracks",
-        "getTrackStreamUrl"
+        "getTrackStreamUrl",
+        "onPlaybackError"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-24T15:25:00Z"
+      "updated_at": "2026-11-25T08:55:00Z"
     }
   ],
   "extensions": [
     {
       "id": "community.provider.monochrome",
       "name": "monochrome",
-      "display_name": "Monochrome (Pure Lossless FLAC)",
-      "version": "2.8.2",
+      "display_name": "Monochrome (Lossless FLAC Engine)",
+      "version": "3.0.0",
       "author": "Viscousity",
-      "description": "Pure Bit-Perfect Lossless FLAC audio provider with adaptive resilient search, studio master high-resolution resolution, accurate per-track acoustic specs, and seamless zero-error YouTube Music fallback.",
+      "description": "Ultra-fast parallel dual-engine Lossless & Hi-Res FLAC provider (Qobuz Hi-Res up to 24-bit/192 kHz + Monochrome Native FLAC) with speculative stream pre-warming, authentic per-track FLAC metadata, and seamless zero-error YouTube Music failover.",
       "type": "MODULE",
       "download": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
       "download_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/dist/monochrome.arch",
-      "sha256": "39c87951f02a9dab38de4feecbcd3b25d58800e16b5c054c0704f61029a9fdc6",
+      "sha256": "61cde9b9192d89f73f3fefde263dcdc75dff7fbe0dd711b85433c75209a37771",
       "icon_url": "https://raw.githubusercontent.com/Viscousity/archivetune-modules/main/extension/monochrome/icon.png",
       "category": "download",
       "tags": [
         "monochrome",
+        "qobuz",
         "lossless",
         "hi-res",
         "flac",
-        "tidal",
         "studio-master",
         "free"
       ],
@@ -67,15 +68,16 @@
         "FLAC",
         "Lossless",
         "Hi-Res",
-        "Studio Master",
+        "Qobuz",
         "Free"
       ],
       "capabilities": [
         "searchTracks",
-        "getTrackStreamUrl"
+        "getTrackStreamUrl",
+        "onPlaybackError"
       ],
       "downloads": 0,
-      "updated_at": "2026-11-24T15:25:00Z"
+      "updated_at": "2026-11-25T08:55:00Z"
     }
   ]
 }
